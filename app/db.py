@@ -2,10 +2,12 @@
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.exc import IntegrityError
 from contextlib import contextmanager
 from datetime import datetime
 
 # データベースへの接続エンジンを作成
+# TODO: db也加入到配置项中
 engine = create_engine('postgresql://luzao:1018@127.0.0.1:5432/luzao')
 
 # Baseオブジェクトを作成
@@ -58,8 +60,19 @@ def session_scope():
 
 def insert_song(song_dict: dict):
     with session_scope() as session:
-        # セッションを使用した処理
+        existing_song = session.query(Song).filter_by(id=song_dict["id"]).first()
+        if existing_song: return
+        
         song_dict["songDate"] = song_date = datetime.strptime(song_dict["songDate"], "%Y.%m.%d").date()
         song_dict["insertTime"] = song_date = datetime.strptime(song_dict["insertTime"], "%Y-%m-%d %H:%M:%S.%f")
-        song = Song(**song_dict)
-        session.add(song)
+        try:
+            song = Song(**song_dict)
+            session.add(song)
+            session.commit()
+        except IntegrityError as e:
+            session.rollback()
+        
+        
+def get_songs():
+    with session_scope() as session:
+        return session.query(Song)
