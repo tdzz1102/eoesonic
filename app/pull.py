@@ -15,12 +15,11 @@ class Pull:
     def pull_if_not_exist(cls, song: Song, album: Album) -> None:
         if not cls.check_if_exist(song):
             cls.pull(song, album)
-            
-            
+    
     @classmethod
     def get_save_path(cls, song: Song):
         create_month = song.songDate.strftime("%Y-%m")
-        file_path: Path = Path(cls.music_path) / create_month / f"{song.id}.m4a"
+        file_path: Path = Path(cls.music_path) / create_month / f"{song.downloadFileName}.m4a"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         return file_path
     

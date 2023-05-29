@@ -98,3 +98,8 @@ def get_songs_with_album():
         query = session.query(Song, Album).join(Album, Song.live == Album.live)
         return query
     
+
+def get_songs():
+    with session_scope() as session:
+        query = session.query(Song)
+        return query
