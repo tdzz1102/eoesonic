@@ -5,15 +5,15 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
 from contextlib import contextmanager
 from datetime import datetime
+from app.config import config
 
-# データベースへの接続エンジンを作成
-# TODO: db也加入到配置项中
-engine = create_engine('postgresql://luzao:1018@127.0.0.1:5432/luzao')
 
-# Baseオブジェクトを作成
+db_file_path = config.get('minuofans', 'db_file_path')
+engine = create_engine(f'sqlite:///{db_file_path}')
+
 Base = declarative_base()
 
-# テーブルの定義
+
 class Song(Base):
     __tablename__ = 'songs'
     
@@ -46,7 +46,6 @@ Session = sessionmaker(bind=engine)
 
 @contextmanager
 def session_scope():
-    """セッションスコープのコンテキストマネージャ"""
     session = Session()
     try:
         yield session

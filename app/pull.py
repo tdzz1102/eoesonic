@@ -5,32 +5,31 @@ from loguru import logger
 import re
 from pathlib import Path
 from io import BytesIO
+from app.config import config
 
 
 class Pull:
-
-    # 依赖注入
-    music_path = None
+    music_path = config.get('navidrome', 'music_path')
     
     @classmethod
-    def pull(cls, song: Song) -> None:
-        if not cls._check_if_exist(song):
-            cls._pull(song)
+    def pull_if_not_exist(cls, song: Song) -> None:
+        if not cls.check_if_exist(song):
+            cls.pull(song)
             
             
     @classmethod
-    def _get_save_path(cls, song: Song):
+    def get_save_path(cls, song: Song):
         create_month = song.songDate.strftime("%Y-%m")
         file_path: Path = Path(cls.music_path) / create_month / f"{song.id}.m4a"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         return file_path
     
     @classmethod
-    def _check_if_exist(cls, song: Song) -> bool:
-        return cls._get_save_path(song).is_file()
+    def check_if_exist(cls, song: Song) -> bool:
+        return cls.get_save_path(song).is_file()
 
     @classmethod
-    def _pull(cls, song: Song) -> None:
+    def pull(cls, song: Song) -> None:
         try:
             # TODO: 其他其实不重要，希望保证只要歌曲能下载就能导入，其他处理如果失败就变成default就好
             logger.info(f"Pulling {song.downloadFileName}...")
@@ -59,7 +58,7 @@ class Pull:
                 title = result.group(1)
                 m4a.tags["\xa9alb"][0] = title
                 
-            save_path = cls._get_save_path(song)
+            save_path = cls.get_save_path(song)
             m4a.save(audiobio_target)
             with open(str(save_path), 'wb') as f:
                 f.write(audiobio_target.getvalue())

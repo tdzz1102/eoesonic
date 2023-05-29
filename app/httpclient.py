@@ -35,7 +35,7 @@ def music_search(member: str):
             },
             {
                 "name": "order",
-                "value": "0" # 时间倒序
+                "value": "0" # 未知顺序！应改为1，时间倒序！
             }
         ],
         "pageable": {"page": 0,"size": 1000} # 全量
