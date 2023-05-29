@@ -1,11 +1,11 @@
-# defination of Song table
-
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, DateTime
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, joinedload
 from sqlalchemy.exc import IntegrityError
 from contextlib import contextmanager
 from datetime import datetime
 from app.config import config
+from loguru import logger
+from app.constant import EOE_MEMBERS
 
 
 db_file_path = config.get('minuofans', 'db_file_path')
@@ -37,8 +37,15 @@ class Song(Base):
     thumbnailUrl = Column(String)
     lyricUrl = Column(String)
     downloadFileName = Column(String)
+    
+    
+class Album(Base):
+    __tablename__ = 'albums'
+    
+    live = Column(String, primary_key=True)
+    singer = Column(String)
+    
 
-# テーブルを作成
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
@@ -59,19 +66,39 @@ def session_scope():
 
 def insert_song(song_dict: dict):
     with session_scope() as session:
-        existing_song = session.query(Song).filter_by(id=song_dict["id"]).first()
-        if existing_song: return
+        song = session.query(Song).filter_by(id=song_dict["id"]).first()
+        if song: return
         
         song_dict["songDate"] = song_date = datetime.strptime(song_dict["songDate"], "%Y.%m.%d").date()
         song_dict["insertTime"] = song_date = datetime.strptime(song_dict["insertTime"], "%Y-%m-%d %H:%M:%S.%f")
         try:
+            st = session.begin()
             song = Song(**song_dict)
             session.add(song)
+            
+            album = session.query(Album).filter_by(live=song.live).first()
+            if album: 
+                if song.singer in EOE_MEMBERS and album.singer == song.singer:
+                    pass
+                else:
+                    album.singer = 'eoe'
+            else:
+                album = Album(live=song.live, singer=song.singer if song.singer in EOE_MEMBERS else 'eoe')
+            session.add(album)
+                
             session.commit()
         except IntegrityError as e:
+            logger.error(e)
             session.rollback()
         
         
 def get_songs():
     with session_scope() as session:
         return session.query(Song)
+    
+    
+def get_songs_with_album():
+    with session_scope() as session:
+        query = session.query(Song, Album).join(Album, Song.live == Album.live)
+        query = query.options(joinedload(Song.album))
+        return query

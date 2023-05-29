@@ -1,11 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
 from app.httpclient import music_search
-from app.db import insert_song, get_songs
+from app.db import insert_song, get_songs_with_album
 from app.pull import Pull
 from app.config import config
-
-
-EOE_MEMBERS = ['柚恩', '露早', '米诺', '莞儿', '虞莫']
+from app.constant import EOE_MEMBERS
 
 
 def sync_db(member):
@@ -15,10 +13,10 @@ def sync_db(member):
     
     
 def pull_music():
-    song_iter = get_songs()
-    for song in song_iter:
+    song_album_iter = get_songs_with_album()
+    for song, album in song_album_iter:
         # TODO: 异步下载？
-        Pull.pull_if_not_exist(song)
+        Pull.pull_if_not_exist(song, album)
     
     
 def main():

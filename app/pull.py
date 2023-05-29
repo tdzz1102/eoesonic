@@ -1,4 +1,4 @@
-from app.db import Song
+from app.db import Song, Album
 from app.httpclient import get_raw
 from mutagen.mp4 import MP4, MP4Cover
 from loguru import logger
@@ -12,9 +12,9 @@ class Pull:
     music_path = config.get('navidrome', 'music_path')
     
     @classmethod
-    def pull_if_not_exist(cls, song: Song) -> None:
+    def pull_if_not_exist(cls, song: Song, album: Album) -> None:
         if not cls.check_if_exist(song):
-            cls.pull(song)
+            cls.pull(song, album)
             
             
     @classmethod
@@ -29,7 +29,7 @@ class Pull:
         return cls.get_save_path(song).is_file()
 
     @classmethod
-    def pull(cls, song: Song) -> None:
+    def pull(cls, song: Song, album: Album) -> None:
         try:
             # TODO: 其他其实不重要，希望保证只要歌曲能下载就能导入，其他处理如果失败就变成default就好
             logger.info(f"Pulling {song.downloadFileName}...")
@@ -42,15 +42,14 @@ class Pull:
             coverb = get_raw(song.coverUrl)
             m4a["covr"] = [MP4Cover(coverb, imageformat=MP4Cover.FORMAT_PNG if song.coverUrl.endswith('png') else MP4Cover.FORMAT_JPEG)]
             
-            """unset album_artist"""
-            if 'aART' in m4a.tags:
-                del m4a.tags['aART']
+            """reset album_artist"""
+            m4a.tags['aART'] = album.singer
                 
             """set date"""
             formatted_date = song.songDate.strftime("%Y-%m-%d")
             m4a.tags["\xa9day"][0] = formatted_date
             
-            """change album name"""
+            """change album title"""
             old_album_tag = m4a.tags["\xa9alb"][0]
             pattern = r"\d{4}年\d{2}月\d{2}日【.+?】(.+)"
             result = re.search(pattern, old_album_tag)
