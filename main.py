@@ -8,18 +8,14 @@ import argparse
 
 def sync_db(member):
     pageable, items = music_search(member)
-    # print(items)
     for song_dict in items:
         insert_song(song_dict)
     
     
 def pull_music():
     song_album_iter = get_songs_with_album()
-    logger.debug('before loop')
     for song, album in song_album_iter:
-        # TODO: 异步下载？
         Pull.pull_if_not_exist(song, album)
-    logger.debug('loop over')
     
 
 def parse_arguments():
@@ -42,8 +38,6 @@ def main():
     else:
         logger.error("Invalid command specified.")
 
-    
 
 if __name__ == '__main__':
-    logger.debug('main')
     main()

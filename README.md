@@ -2,19 +2,16 @@
 
 ## todo
 
+- __添加artist.\*图片，可能仍要调整目录结构__
+
 - 排查问题，检查下载失败的情况（估计是歌曲以外的信息报错，没有继续处理而是直接raise了）
-    - IncompleteRead 未知
-    - no schema supplied url为空时报错
-    - day 对空使用[]报错
+    - IncompleteRead 只能retry
     - not a mp4 file 存在mp3和wav
-    
     
 
 - 按时间倒序导入，否则recently added会很乱
 
 - ->重构pull逻辑，将Pull作为Song的代理类
-
-- __添加artist.\*图片，可能仍要调整目录结构__
 
 - 根据[文档](https://www.navidrome.org/docs/usage/artwork/)，应该是 歌手/专辑/歌曲 的形式，在歌手一级下放置artist.*
 
