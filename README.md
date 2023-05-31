@@ -10,15 +10,9 @@
     - IncompleteRead 只能retry
     - not a mp4 file 存在mp3和wav
     
-
 - 按时间倒序导入，否则recently added会很乱
 
-- ->重构pull逻辑，将Pull作为Song的代理类
-
-- coverUrl和thumbnailUrl并用
-
-- 试试vmiss hk
-    - 效果很差，内存太小？
+- 试一下异步下载会不会更快
 
 ## 目录结构
 

@@ -8,46 +8,43 @@ from io import BytesIO
 from app.config import config
 
 
-class Pull:
+class SongPull:
+    
     music_path = config.get('navidrome', 'music_path')
     
-    @classmethod
-    def pull_if_not_exist(cls, song: Song, album: Album) -> None:
-        if not cls.check_if_exist(song):
-            cls.pull(song, album)
+    def __init__(self, song: Song, album: Album) -> None:
+        self.song = song
+        self.album = album
     
-    @classmethod
-    def get_save_path(cls, song: Song):
-        create_month = song.songDate.strftime("%Y-%m")
-        file_path: Path = Path(cls.music_path) / create_month / f"{song.downloadFileName}.m4a"
+    def pull_if_not_exist(self) -> None:
+        if not self.get_save_path().is_file(): # if song do not exist
+            self.pull()
+    
+    def get_save_path(self):
+        file_path: Path = Path(self.music_path) / self.album.singer / self.album.live / f"{self.song.downloadFileName}"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         return file_path
-    
-    @classmethod
-    def check_if_exist(cls, song: Song) -> bool:
-        return cls.get_save_path(song).is_file()
 
-    @classmethod
-    def pull(cls, song: Song, album: Album) -> None:
+    def pull(self) -> None:
         try:
-            logger.info(f"Pulling {song.downloadFileName}...")
-            audiob = get_raw(song.audioUrl)
+            logger.info(f"Pulling {self.song.downloadFileName}...")
+            audiob = get_raw(self.song.audioUrl)
             audiobio = BytesIO(audiob)
             audiobio_target = BytesIO(audiob)
             m4a = MP4(audiobio)
             
             """set cover"""
             try:
-                coverb = get_raw(song.coverUrl)
-                m4a["covr"] = [MP4Cover(coverb, imageformat=MP4Cover.FORMAT_PNG if song.coverUrl.endswith('png') else MP4Cover.FORMAT_JPEG)]
+                coverb = get_raw(self.song.coverUrl)
+                m4a["covr"] = [MP4Cover(coverb, imageformat=MP4Cover.FORMAT_PNG if self.song.coverUrl.endswith('png') else MP4Cover.FORMAT_JPEG)]
             except Exception as e:
                 logger.warning(f'No cover supplyed. The error message is {e}')
             
             """reset album_artist"""
-            m4a.tags['aART'] = album.singer
+            m4a.tags['aART'] = self.album.singer
                 
             """set date"""
-            formatted_date = song.songDate.strftime("%Y-%m-%d")
+            formatted_date = self.song.songDate.strftime("%Y-%m-%d")
             m4a.tags["\xa9day"] = [formatted_date]
             
             """change album title"""
@@ -58,7 +55,7 @@ class Pull:
                 title = result.group(1)
                 m4a.tags["\xa9alb"][0] = title
                 
-            save_path = cls.get_save_path(song)
+            save_path = self.get_save_path()
             m4a.save(audiobio_target)
             with open(str(save_path), 'wb') as f:
                 f.write(audiobio_target.getvalue())
