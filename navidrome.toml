@@ -1,3 +1,8 @@
-DefaultLanguage = 'zh'
-LastFM.Enabled = false
 BaseUrl = '/music'
+DefaultLanguage = 'zh-Hans'
+UILoginBackgroundUrl = 'http://124.220.153.22:30080/s/GEWmcFHKrQrGzJK/preview'
+UIWelcomeMessage = '多想闭上眼，听你声音在耳边~'
+EnableSharing = true
+EnableUserEditing = false
+LastFM.Enabled = false
+RecentlyAddedByModTime = true
