@@ -95,7 +95,7 @@ def insert_song(song_dict: dict):
     
 def get_songs_with_album():
     with session_scope() as session:
-        query = session.query(Song, Album).join(Album, Song.live == Album.live)
+        query = session.query(Song, Album).join(Album, Song.live == Album.live).order_by(Song.songDate)
         return query
     
 

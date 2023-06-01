@@ -2,17 +2,13 @@
 
 ## todo
 
-- __添加artist.\*图片，可能仍要调整目录结构__
+website到minuo.fans
 
-- 根据[文档](https://www.navidrome.org/docs/usage/artwork/)，应该是 歌手/专辑/歌曲 的形式，在歌手一级下放置artist.*
+navidrome的背景图片和默认语言
 
-- 排查问题，检查下载失败的情况（估计是歌曲以外的信息报错，没有继续处理而是直接raise了）
-    - IncompleteRead 只能retry
-    - not a mp4 file 存在mp3和wav
-    
-- 按时间倒序导入，否则recently added会很乱
+最大登录数
 
-- 试一下异步下载会不会更快
+mp3、wav支持（只有4首歌，优先级低）
 
 ## 目录结构
 

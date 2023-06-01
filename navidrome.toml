@@ -1,0 +1,3 @@
+DefaultLanguage = 'zh'
+LastFM.Enabled = false
+BaseUrl = '/music'
