@@ -6,3 +6,4 @@ EnableSharing = true
 EnableUserEditing = false
 LastFM.Enabled = false
 RecentlyAddedByModTime = true
+EnableStarRating = false

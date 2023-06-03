@@ -70,6 +70,8 @@ def insert_song(song_dict: dict):
         song = session.query(Song).filter_by(id=song_dict["id"]).first()
         if song: return
         
+        logger.info(song.downloadFileName)
+        
         song_dict["songDate"] = song_date = datetime.strptime(song_dict["songDate"], "%Y.%m.%d").date()
         song_dict["insertTime"] = song_date = datetime.strptime(song_dict["insertTime"], "%Y-%m-%d %H:%M:%S.%f")
         try:
