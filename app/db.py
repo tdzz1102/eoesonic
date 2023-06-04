@@ -70,14 +70,13 @@ def insert_song(song_dict: dict):
         song = session.query(Song).filter_by(id=song_dict["id"]).first()
         if song: return
         
-        logger.info(song.downloadFileName)
-        
         song_dict["songDate"] = song_date = datetime.strptime(song_dict["songDate"], "%Y.%m.%d").date()
         song_dict["insertTime"] = song_date = datetime.strptime(song_dict["insertTime"], "%Y-%m-%d %H:%M:%S.%f")
         try:
             # st = session.begin()
             song = Song(**song_dict)
             session.add(song)
+            logger.info(f'sync {song.downloadFileName}')
             
             album = session.query(Album).filter_by(live=song.live).first()
             if album: 
@@ -104,4 +103,10 @@ def get_songs_with_album():
 def get_songs():
     with session_scope() as session:
         query = session.query(Song)
+        return query
+    
+
+def get_song_count():
+    with session_scope() as session:
+        query = session.query(Song).count()
         return query

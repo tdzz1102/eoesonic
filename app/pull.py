@@ -1,5 +1,6 @@
-from app.db import Song, Album
+from app.db import Song, Album, get_song_count
 from app.httpclient import get_raw
+from app.tools import AtomicInteger
 from mutagen.mp4 import MP4, MP4Cover
 from loguru import logger
 import re
@@ -11,6 +12,8 @@ from app.config import config
 class SongPull:
     
     music_path = config.get('navidrome', 'music_path')
+    song_count = get_song_count()
+    counter = AtomicInteger()
     
     def __init__(self, song: Song, album: Album) -> None:
         self.song = song
@@ -27,7 +30,8 @@ class SongPull:
 
     def pull(self) -> None:
         try:
-            logger.info(f"Pulling {self.song.downloadFileName}...")
+            SongPull.counter.increment()
+            logger.info(f'({SongPull.counter.get_value()} / {SongPull.song_count}) pull {self.song.downloadFileName}')
             audiob = get_raw(self.song.audioUrl)
             audiobio = BytesIO(audiob)
             audiobio_target = BytesIO(audiob)
