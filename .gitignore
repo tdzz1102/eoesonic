@@ -162,5 +162,5 @@ cython_debug/
 Data*/
 *.out
 *.db
-docs/
+ignore/
 .vscode/
