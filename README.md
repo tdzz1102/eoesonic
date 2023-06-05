@@ -29,7 +29,7 @@ python main.py pull
 
 sync会调用eoebeat api，获取歌曲信息（包括下载地址）并插入数据库，pull会下载歌曲到本地，并处理ID3标签。sync和pull都会检查已有的数据，若已存在不会覆盖写入。
 
-docker启动后，访问http://你的服务器ip:4533/，进入播放器ui。subsonic api也是这个地址，可以用它登录各种客户端。
+docker启动后，访问 http://你的服务器ip:4533/ 进入播放器ui。subsonic api也是这个地址，可以用它登录各种客户端。
 
 ## 说明
 
