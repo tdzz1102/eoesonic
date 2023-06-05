@@ -44,8 +44,8 @@ st.title("EOESonic 用户注册")
 
 
 with st.form("my_form"):
-    username = st.text_input('username')
-    password = st.text_input('password', type='password')
+    username = st.text_input('用户名')
+    password = st.text_input('密码', type='password')
     
     submitted = st.form_submit_button("确认")
     if submitted:
