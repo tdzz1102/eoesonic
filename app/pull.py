@@ -32,6 +32,10 @@ class SongPull:
         try:
             SongPull.counter.increment()
             logger.info(f'({SongPull.counter.get_value()} / {SongPull.song_count}) pull {self.song.downloadFileName}')
+            audio_url = self.song.audioUrl
+            if not audio_url.endswith('.m4a'):
+                logger.warning('Not a m4a file.')
+                return
             audiob = get_raw(self.song.audioUrl)
             audiobio = BytesIO(audiob)
             audiobio_target = BytesIO(audiob)

@@ -32,7 +32,7 @@ def main():
     
     if args.command == "sync":
         for member in EOE_MEMBERS:
-            logger.debug(member)
+            logger.info(member)
             sync_db(member)
         
     elif args.command == "pull":
