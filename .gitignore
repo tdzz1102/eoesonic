@@ -164,3 +164,4 @@ Data*/
 *.db
 ignore/
 .vscode/
+docs/

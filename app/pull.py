@@ -10,10 +10,10 @@ from app.config import config
 
 
 class SongPull:
-    
+    'pull song in db to local'
     music_path = config.get('navidrome', 'music_path')
-    song_count = get_song_count()
     counter = AtomicInteger()
+    song_count = get_song_count()
     
     def __init__(self, song: Song, album: Album) -> None:
         self.song = song

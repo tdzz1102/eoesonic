@@ -83,9 +83,9 @@ def insert_song(song_dict: dict):
                 if song.singer in EOE_MEMBERS and album.singer == song.singer:
                     pass
                 else:
-                    album.singer = 'eoe'
+                    album.singer = 'EOE'
             else:
-                album = Album(live=song.live, singer=song.singer if song.singer in EOE_MEMBERS else 'eoe')
+                album = Album(live=song.live, singer=song.singer if song.singer in EOE_MEMBERS else 'EOE')
             
             session.add(album)
             session.commit()

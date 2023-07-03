@@ -5,6 +5,7 @@ from app.constant import EOE_MEMBERS
 from loguru import logger
 from concurrent.futures import ThreadPoolExecutor
 import argparse
+from time import sleep
 
 
 def sync_db(member):
@@ -23,7 +24,7 @@ def pull_music():
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["sync", "pull"], help="Specify the command to execute: sync or pull")
+    parser.add_argument("command", choices=["sync", "pull", "auto"], help="Specify the command to execute: sync, pull or auto")
     return parser.parse_args()
     
     
@@ -37,6 +38,15 @@ def main():
         
     elif args.command == "pull":
         pull_music()
+        
+    elif args.command == "auto":
+        while True:
+            for member in EOE_MEMBERS:
+                logger.info(member)
+                sync_db(member)
+            pull_music()
+            logger.info("This round OK. Sleeping for 12 hours...")
+            sleep(43200) # 12h
         
     else:
         logger.error("Invalid command specified.")
