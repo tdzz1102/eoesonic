@@ -3,13 +3,12 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
 from contextlib import contextmanager
 from datetime import datetime
-from app.config import config
+from app.config import Config
 from loguru import logger
 from app.constant import EOE_MEMBERS
 
 
-db_file_path = config.get('minuofans', 'db_file_path')
-engine = create_engine(f'sqlite:///{db_file_path}')
+engine = create_engine(f'sqlite:///{Config.db_file_path}')
 # engine = create_engine('postgresql://luzao:1018@127.0.0.1:5432/luzao')
 
 Base = declarative_base()

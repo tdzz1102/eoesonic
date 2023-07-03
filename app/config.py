@@ -1,8 +1,9 @@
-import configparser
 from pathlib import Path
 
 
-config = configparser.ConfigParser()
-config_ini_path = Path(__file__).parent.parent / 'config.ini'
-config.read(str(config_ini_path))
+base_path = Path(__file__).parent.parent
 
+
+class Config:
+    db_file_path = base_path / 'database.db'
+    music_path = base_path / 'Data' / 'music'

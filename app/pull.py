@@ -6,12 +6,11 @@ from loguru import logger
 import re
 from pathlib import Path
 from io import BytesIO
-from app.config import config
+from app.config import Config
 
 
 class SongPull:
     'pull song in db to local'
-    music_path = config.get('navidrome', 'music_path')
     counter = AtomicInteger()
     song_count = get_song_count()
     
@@ -24,7 +23,7 @@ class SongPull:
             self.pull()
     
     def get_save_path(self):
-        file_path: Path = Path(self.music_path) / self.album.singer / self.album.live / f"{self.song.downloadFileName}"
+        file_path: Path = Path(Config.music_path) / self.album.singer / self.album.live / f"{self.song.downloadFileName}"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         return file_path
 
