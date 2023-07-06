@@ -29,6 +29,8 @@ class SongPull:
 
     def pull(self) -> None:
         try:
+            if self.song.live == '【EOE：造梦彩券】':
+                return
             SongPull.counter.increment()
             logger.info(f'({SongPull.counter.get_value()} / {SongPull.song_count}) pull {self.song.downloadFileName}')
             audio_url = self.song.audioUrl
